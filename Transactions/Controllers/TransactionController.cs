@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Transactions.Data;
 using Transactions.Domain.Enums;
+using Transactions.Domain.Models;
+
 
 namespace Transactions.Controllers
 {
@@ -13,11 +15,14 @@ namespace Transactions.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
+        private readonly BankAccountService _bankAccountService;
 
-        public TransactionController(AppDbContext context, IMapper mapper)
+
+        public TransactionController(AppDbContext context, IMapper mapper, BankAccountService bankAccountService)
         {
             _context = context;
             _mapper = mapper;
+            _bankAccountService = bankAccountService;
         }
 
         // 1. Buscar transação pelo ID
@@ -71,6 +76,32 @@ namespace Transactions.Controllers
 
             var transactionDtos = _mapper.Map<List<TransactionDto>>(transactions);
             return Ok(transactionDtos);
+        }
+        [HttpPut]
+        public async Task<ActionResult<TransactionDto>> CreateTransaction([FromBody] TransactionDto transactionDto)       
+        {
+            if (transactionDto == null)
+                return BadRequest("Transação inválida.");
+
+            var balance = await _bankAccountService.GetBalanceAsync(transactionDto.BankAccountId);
+            if (balance == null)
+            {
+                return NotFound("Conta não encontrada.");
+            }
+
+            if (transactionDto.TransactionType == TransactionType.DEBIT && balance.Amount > transactionDto.Amount)
+            {
+                return BadRequest("Saldo insuficiente.");
+            }
+
+            var transaction =  _mapper.Map<TransactionModel>(transactionDto);
+          
+            var updated = await _bankAccountService.UpdateBalanceAsync(transaction);
+
+            if (!updated)
+                return BadRequest("Erro ao atualizar saldo.");
+
+            return Ok(updated);
         }
     }
 }

@@ -81,18 +81,18 @@ namespace AccountBank.Domain.Services
         {
             var account = await _context.Accounts
                 .Include(a => a.Balance)  
-                .FirstOrDefaultAsync(a => a.Id == transaction.ToAccountId);  
+                .FirstOrDefaultAsync(a => a.Id == transaction.BankAccountId);  
 
             if (account == null)
             {
                 throw new ArgumentException("Conta não encontrada.");
             }
 
-            if (transaction.TransactionType == TransactionType.CREDIT)
+            if (transaction.TransactionType == "CREDIT")
             {
                 account.Balance.AddAmount(transaction.Amount);
             }
-            else if (transaction.TransactionType == TransactionType.DEBIT)
+            else if (transaction.TransactionType == "DEBIT")
             {
                 account.Balance.SubAmount(transaction.Amount);
             }

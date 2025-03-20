@@ -1,6 +1,8 @@
 ﻿using AccountBank.Data;
+using AccountBank.Domain.Enums;
 using AccountBank.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountBank.Controllers
 {
@@ -23,6 +25,33 @@ namespace AccountBank.Controllers
                 return NotFound();
             }
             return Ok(balance);
+        }
+
+        [HttpPut("update-balance")]
+        public async Task<ActionResult<string>> UpdateBalance([FromBody] AccountTransactionModel transaction)
+        {
+            var account = await _context.Accounts
+                .Include(a => a.Balance)
+                .FirstOrDefaultAsync(a => a.Id == transaction.BankAccountId);
+
+            if (account == null)
+            {
+                return NotFound("Conta não encontrada.");
+            }
+
+            if (transaction.TransactionType == "CREDIT")
+            {
+                account.Balance.AddAmount(transaction.Amount);
+            }
+            else if (transaction.TransactionType == "DEBIT")
+            {
+                account.Balance.SubAmount(transaction.Amount);
+            }
+
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+
+            return Ok("Saldo atualizado com sucesso");
         }
 
     }
