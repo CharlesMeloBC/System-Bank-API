@@ -1,0 +1,44 @@
+# Ignore a pasta bin/
+bin/
+# Ignore a pasta obj/
+obj/
+
+# Ignore arquivos de usuário do Visual Studio
+.vs/
+# Ignore arquivos de configuração do Visual Studio
+.vs2019/
+.vs2017/
+
+# Ignore arquivos de configuração do Rider
+.idea/
+
+# Ignore arquivos de build gerados pelo Visual Studio
+*.dll
+*.exe
+*.pdb
+*.app
+*.apk
+*.xap
+*.mdb
+*.vspscc
+*.vssscc
+
+# Ignore arquivos de cache do Visual Studio
+*.cache
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Ignore arquivos do NuGet
+*.nupkg
+# Ignore pasta do NuGet
+.nuget/
+
+# Ignore arquivos temporários do Visual Studio Code
+.vscode/
+
+# Ignore arquivos de backup
+*~
+# Ignore arquivos de log
+*.log
