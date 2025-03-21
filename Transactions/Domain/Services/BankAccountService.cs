@@ -7,7 +7,7 @@ using Transactions.Domain.Models;
 public class BankAccountService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _bankAccountApiUrl = "https://localhost:"; // Substitua pela URL do seu BanckAccount 
+    private readonly string _bankAccountApiUrl = "https://localhost:7218"; // Substitua pela URL do seu BanckAccount 
 
     public BankAccountService(HttpClient httpClient)
     {

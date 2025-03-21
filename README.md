@@ -196,36 +196,36 @@ Gerencia as transações entre contas.
 - **Exemplo de Requisição:**
   ```json
     {
-    "BankAccountId": 1007,
+    "BankAccountId":1007,
     "Amount": 500.00,
     "TransactionType": "CREDIT",
     "CounterpartyBankCode": "435",
     "CounterpartyBankName": "DelFinance",
-    "CounterpartyBranch": "80283",
-    "CounterpartyAccountNumber": "86513544",
-    "CounterpartyHolderName": "Jesse Pinkman",
-    "CounterpartyHolderType": "NATURAL",
-    "CounterpartyAccountType": "SALARY",
-    "CounterpartyHolderDocument": "45678901233"
+    "CounterpartyBranch": "45655",
+    "CounterpartyAccountNumber": "019321769",
+    "CounterpartyHolderName": "Oliver Queen",
+    "CounterpartyHolderType": "LEGAL",
+    "CounterpartyAccountType": "PAYMENT",
+    "CounterpartyHolderDocument": "23456789011"
     }
   ```
 - **Resposta:**
   ```json
     {
-	"id": 15,
+	"id": 18,
 	"transactionType": "CREDIT",
 	"amount": 500,
 	"bankAccountId": 1007,
 	"counterpartyBankCode": "435",
 	"counterpartyBankName": "DelFinance",
-	"counterpartyBranch": "80283",
-	"counterpartyAccountNumber": "86513544",
-	"counterpartyAccountType": "SALARY",
-	"counterpartyHolderName": "Jesse Pinkman",
-	"counterpartyHolderType": "NATURAL",
-	"counterpartyHolderDocument": "45678901233",
-	"createdAt": "2025-03-21T04:11:49.7732498-03:00"
-    }
+	"counterpartyBranch": "45655",
+	"counterpartyAccountNumber": "019321769",
+	"counterpartyAccountType": "PAYMENT",
+	"counterpartyHolderName": "Oliver Queen",
+	"counterpartyHolderType": "LEGAL",
+	"counterpartyHolderDocument": "23456789011",
+	"createdAt": "2025-03-21T06:20:21.4356244-03:00"
+  }
   ```
 
 
@@ -258,6 +258,21 @@ Gerencia as transações entre contas.
      "createdAt": "2025-03-21T04:11:49.7732498"
     }
     ```
+## Balance 💵
+
+- **Endpoint:** `GET /Balance/{id da conta}` 
+- **Exemplo de Requisição:**
+  ```
+  https://localhost:###/Balance/1007
+  ```
+- **Resposta:**
+  ```json
+    {
+      "id": 1007,
+      "avaliableAmount": 500,
+      "blokedAmount": 0
+    }
+  ```
 
 ### Creditos
 *Desenvolvida por: Charles Melo Bispo de Carvalho*

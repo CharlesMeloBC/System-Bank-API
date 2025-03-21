@@ -1,6 +1,7 @@
 using AccountBank.Data;
 using AccountBank.Domain.Services;
 using AccountBank.Mappings;
+using AccountBank.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(typeof(AccountBankMappingProfile));
 builder.Services.AddScoped<BankAccountService>();
+builder.Services.AddScoped <BalanceService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
