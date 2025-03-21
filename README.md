@@ -100,7 +100,8 @@ Os tipos de conta e transação foram atendidos.
 
 
 ## Modelo de Arquitetura
-![Arquitetura](../System-Bank-API/images/Arquitetura.png)
+
+![arquitetura](https://github.com/CharlesMeloBC/System-Bank-API/raw/main/images/Arquitetura.png)
 
 # Módulo: Bank Account 👥
 
