@@ -1,4 +1,5 @@
-﻿using AccountBank.Domain.DTOs;
+﻿using AccountBank.Domain.Dtos;
+using AccountBank.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountBank.Domain.Interfaces
@@ -16,6 +17,10 @@ namespace AccountBank.Domain.Interfaces
         public Task<ActionResult<IEnumerable<AccountBankDto>>> GetAllAccountHolder(string holder);
 
         public Task<ActionResult<AccountBankDto>> Post([FromBody] AccountBankDto accountDto);
+
+        public Task<IActionResult> UpdateEmail(int accountId, [FromBody] UpdateEmailDto request);
+
+        public Task<IActionResult> UpdateStatus(int accountId, [FromBody] UpdateAccountStatusDto request);
 
     }
 }

@@ -16,7 +16,6 @@ namespace AccountBank.Domain.Models
         public string CounterpartyHolderName { get; set; }
         public string CounterpartyHolderType { get; set; }
         public string CounterpartyHolderDocument { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 }

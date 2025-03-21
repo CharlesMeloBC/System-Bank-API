@@ -7,7 +7,6 @@ public class TransactionMappingProfile : Profile
 {
     public TransactionMappingProfile()
     {
-        // De DTO para Model
         CreateMap<TransactionDto, TransactionModel>()
             .ConstructUsing(dto => new TransactionModel(
                 Enum.Parse<TransactionType>(dto.TransactionType.ToString(), true),
@@ -24,7 +23,6 @@ public class TransactionMappingProfile : Profile
             ))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now));
 
-        // De Model para DTO
         CreateMap<TransactionModel, TransactionDto>()
             .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(src => src.TransactionType.ToString()))
             .ForMember(dest => dest.CounterpartyAccountType, opt => opt.MapFrom(src => src.CounterpartyAccountType.ToString()))

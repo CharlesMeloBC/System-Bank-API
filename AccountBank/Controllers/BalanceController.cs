@@ -38,6 +38,10 @@ namespace AccountBank.Controllers
             {
                 return NotFound("Conta não encontrada.");
             }
+            if (account.Status != AccountStatus.ACTIVE)
+            {
+                return BadRequest("A conta não está ativa.");
+            }
 
             if (transaction.TransactionType == "CREDIT")
             {

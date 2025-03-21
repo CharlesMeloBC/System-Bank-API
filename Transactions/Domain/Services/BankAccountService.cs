@@ -2,13 +2,12 @@
 using System.Text;
 using System.Text.Json;
 using Transactions.Domain.DTOs;
-using Transactions.Domain.Enums;
 using Transactions.Domain.Models;
 
 public class BankAccountService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _bankAccountApiUrl = "https://localhost:7218"; // Substitua pela URL do seu BanckAccount
+    private readonly string _bankAccountApiUrl = "https://localhost:7218"; // Substitua pela URL do seu BanckAccount 
 
     public BankAccountService(HttpClient httpClient)
     {
@@ -34,12 +33,11 @@ public class BankAccountService
 
         var jsonContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-        // Enviando a requisição para atualizar o saldo
+    // Enviando a requisição para atualizar o saldo
         var response = await _httpClient.PutAsync($"{_bankAccountApiUrl}/Balance/update-balance", jsonContent);
 
         if (!response.IsSuccessStatusCode)
         {
-            // Log ou captura do erro específico
             var errorContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"Erro ao chamar API: {errorContent}");
             return false;

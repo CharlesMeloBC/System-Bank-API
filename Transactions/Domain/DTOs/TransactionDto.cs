@@ -16,7 +16,6 @@ namespace Transactions.Domain.DTOs
         public string CounterpartyHolderName { get; set; }
         public CounterpartyHolderType CounterpartyHolderType { get; set; }
         public string CounterpartyHolderDocument { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 }

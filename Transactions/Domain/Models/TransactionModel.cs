@@ -18,6 +18,7 @@ namespace Transactions.Domain.Models
         public DateTime? UpdatedAt { get; private set; }
         public DateTime? CreatedAt { get; private set; }
 
+        private TransactionModel() {}
         public TransactionModel(
             TransactionType transactionType,
             decimal amount,

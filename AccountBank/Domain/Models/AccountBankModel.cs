@@ -44,8 +44,7 @@ namespace AccountBank.Domain.Models
             HolderDocuments = holderDocuments;
             HolderType = holderType;
             Status = AccountStatus.ACTIVE;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.Now;
             }
         
             account.Balance = new BalanceModel(account.Id);

@@ -1,42 +1,36 @@
 ﻿using Transactions.Domain.DTOs;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Transactions.Data;
 using Transactions.Domain.Enums;
-using Transactions.Domain.Models;
+using Transactions.Domain.Interfaces;
+using Transactions.Domain.Services;
 
 
 namespace Transactions.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TransactionController : ControllerBase
+    public class TransactionController : ControllerBase, ITransactionController
     {
-        private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly BankAccountService _bankAccountService;
+        private readonly TransactionService _transactionService;
 
-
-        public TransactionController(AppDbContext context, IMapper mapper, BankAccountService bankAccountService)
+        public TransactionController(TransactionService transactionService)
         {
-            _context = context;
-            _mapper = mapper;
-            _bankAccountService = bankAccountService;
+            _transactionService = transactionService;
         }
 
-        // 1. Buscar transação pelo ID
+        // Buscar transação pelo ID
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var transaction = await _context.Transactions.FindAsync(id);
+            var transaction = await _transactionService.GetById(id);
             if (transaction == null) return NotFound("Transaction not found");
 
-            var transactionDto = _mapper.Map<TransactionDto>(transaction);
-            return Ok(transactionDto);
+            return Ok(transaction);
         }
 
-        // 2. Buscar todas as transações de uma conta bancária com filtros e ordenação
+        //Busca todas as transação pelo ID com filtros
+
         [HttpGet("account/{bankAccountId}")]
         public async Task<IActionResult> GetByBankAccountId(
             int bankAccountId,
@@ -44,64 +38,41 @@ namespace Transactions.Controllers
             [FromQuery] DateTime? endDate,
             [FromQuery] TransactionType? transactionType)
         {
-            var query = _context.Transactions
-                .Where(t => t.BankAccountId == bankAccountId)
-                .OrderByDescending(t => t.CreatedAt)
-                .AsQueryable();
+            var query = await _transactionService.GetByBankAccountId(bankAccountId, startDate, endDate, transactionType);
 
-            if (startDate.HasValue)
-                query = query.Where(t => t.CreatedAt >= startDate.Value);
+            if (query == null || !query.Any())
+                return NotFound("Nenhuma transação encontrada para os filtros especificados.");
 
-            if (endDate.HasValue)
-                query = query.Where(t => t.CreatedAt <= endDate.Value);
+            return Ok(query);
+        }
+        // Buscar transações pelo código do banco 
 
-            if (transactionType.HasValue)
-                query = query.Where(t => t.TransactionType == transactionType.Value);
-
-            var transactions = await query.ToListAsync();
-            var transactionDtos = _mapper.Map<List<TransactionDto>>(transactions);
-
-            return Ok(transactionDtos);
+        [HttpGet("counterparty/bank/{conterpartyBankCode}")]
+        public async Task<ActionResult<IEnumerable<TransactionDto>>> GetByCounterpartyBankCode(string conterpartyBankCode)
+        {
+            var transactions = await _transactionService.GetByCounterpartyBankCode(conterpartyBankCode);
+            
+            return Ok(transactions.Result);
         }
 
-        // 3. Buscar transações pelo código do banco e número da conta da contraparte
-        [HttpGet("counterparty")]
-        public async Task<IActionResult> GetByCounterparty(
-            [FromQuery] string bankCode,
-            [FromQuery] string accountNumber)
-        {
-            var transactions = await _context.Transactions
-                .Where(t => t.CounterpartyBankCode == bankCode && t.CounterpartyAccountNumber == accountNumber)
-                .ToListAsync();
+        // Buscar transações pelo número da conta da contraparte
 
-            var transactionDtos = _mapper.Map<List<TransactionDto>>(transactions);
-            return Ok(transactionDtos);
+        [HttpGet("counterparty/account/{counterpartyAccountNumber}")]
+        public async Task<ActionResult<IEnumerable<TransactionDto>>> GetByCounterpartyAccountNumber(string counterpartyAccountNumber)
+        {
+            var transactions = await _transactionService.GetByCounterpartyAccountNumber(counterpartyAccountNumber); 
+            
+            return Ok(transactions.Result);
         }
-        [HttpPut]
-        public async Task<ActionResult<TransactionDto>> CreateTransaction([FromBody] TransactionDto transactionDto)       
+
+        // Realiza transação entre contas
+
+        [HttpPost]
+        public async Task<ActionResult<TransactionDto>> ProcessTransaction([FromBody] TransactionDto transactionDto)
         {
-            if (transactionDto == null)
-                return BadRequest("Transação inválida.");
+            var transaction = await _transactionService.ProcessTransaction(transactionDto); 
 
-            var balance = await _bankAccountService.GetBalanceAsync(transactionDto.BankAccountId);
-            if (balance == null)
-            {
-                return NotFound("Conta não encontrada.");
-            }
-
-            if (transactionDto.TransactionType == TransactionType.DEBIT && balance.Amount > transactionDto.Amount)
-            {
-                return BadRequest("Saldo insuficiente.");
-            }
-
-            var transaction =  _mapper.Map<TransactionModel>(transactionDto);
-          
-            var updated = await _bankAccountService.UpdateBalanceAsync(transaction);
-
-            if (!updated)
-                return BadRequest("Erro ao atualizar saldo.");
-
-            return Ok(updated);
+            return Ok(transactionDto);
         }
     }
 }

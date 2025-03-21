@@ -5,6 +5,7 @@ using AccountBank.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace AccountBank.Domain.Services
 {
@@ -18,7 +19,6 @@ namespace AccountBank.Domain.Services
                 _context = context;
                 _mapper = mapper;
             }
-
             public async Task<IEnumerable<AccountBankDto>> GetAll()
             {
                 var accounts = await _context.Accounts.ToListAsync();
@@ -67,7 +67,21 @@ namespace AccountBank.Domain.Services
                     account.HolderDocuments, 
                     account.HolderType);
 
-                _context.Accounts.Add(account);
+            var VerifyDuplicateAccount = await _context.Accounts
+            .FirstOrDefaultAsync(
+                e => e.HolderDocuments == account.HolderDocuments
+                &&
+                e.HolderType == account.HolderType
+                );
+
+            if (VerifyDuplicateAccount != null)
+            {
+                throw new InvalidOperationException($"Já existe uma conta do tipo {account.TypeAccount} no documento informado");
+            }
+
+            
+            _context.Accounts.Add(account);
+
                 await _context.SaveChangesAsync();
 
                 account.Balance = new BalanceModel(account.Id);
@@ -77,9 +91,32 @@ namespace AccountBank.Domain.Services
                 return _mapper.Map<AccountBankDto>(account);
 
             }
-        public async Task<string> UpdateAccountBalance(AccountTransactionModel transaction)
+        public async Task<AccountBankDto> UpdateEmail(int accountId, string newEmail)
         {
-            var account = await _context.Accounts
+            var account = await _context.Accounts.FindAsync(accountId);
+            if (account == null) throw new ArgumentException("Conta não encontrada.");
+
+            account.UpdateEmail(newEmail);
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<AccountBankDto>(account);
+        }
+
+        public async Task<AccountBankDto> UpdateStatus(int accountId, AccountStatus newStatus)
+        {
+            var account = await _context.Accounts.FindAsync(accountId);
+            if (account == null) throw new ArgumentException("Conta não encontrada.");
+
+            account.ChangeAccountStatus(newStatus);
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<AccountBankDto>(account);
+        }
+        public async Task<string> UpdateAccountBalance(AccountTransactionModel transaction)
+            {
+                var account = await _context.Accounts
                 .Include(a => a.Balance)  
                 .FirstOrDefaultAsync(a => a.Id == transaction.BankAccountId);  
 
@@ -97,6 +134,7 @@ namespace AccountBank.Domain.Services
                 account.Balance.SubAmount(transaction.Amount);
             }
 
+            transaction.CreatedAt = DateTime.Now;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
 
