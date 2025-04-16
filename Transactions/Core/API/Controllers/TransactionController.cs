@@ -5,7 +5,7 @@ using Transactions.Domain.Interfaces;
 using Transactions.Domain.Services;
 
 
-namespace Transactions.Controllers
+namespace Transactions.Core.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -51,7 +51,7 @@ namespace Transactions.Controllers
         public async Task<ActionResult<IEnumerable<TransactionDto>>> GetByCounterpartyBankCode(string conterpartyBankCode)
         {
             var transactions = await _transactionService.GetByCounterpartyBankCode(conterpartyBankCode);
-            
+
             return Ok(transactions.Result);
         }
 
@@ -60,8 +60,8 @@ namespace Transactions.Controllers
         [HttpGet("counterparty/account/{counterpartyAccountNumber}")]
         public async Task<ActionResult<IEnumerable<TransactionDto>>> GetByCounterpartyAccountNumber(string counterpartyAccountNumber)
         {
-            var transactions = await _transactionService.GetByCounterpartyAccountNumber(counterpartyAccountNumber); 
-            
+            var transactions = await _transactionService.GetByCounterpartyAccountNumber(counterpartyAccountNumber);
+
             return Ok(transactions.Result);
         }
 
@@ -70,7 +70,7 @@ namespace Transactions.Controllers
         [HttpPost]
         public async Task<ActionResult<TransactionDto>> ProcessTransaction([FromBody] TransactionDto transactionDto)
         {
-            var transaction = await _transactionService.ProcessTransaction(transactionDto); 
+            var transaction = await _transactionService.ProcessTransaction(transactionDto);
 
             return Ok(transactionDto);
         }

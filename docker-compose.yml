@@ -1,0 +1,46 @@
+services:
+  accountbank-api:
+    build:
+      context: .
+      dockerfile: AccountBank/Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - system-bank-network
+    depends_on:
+      - transactions-api
+      - sql-server
+    command: >
+      sh -c "./wait-for-it.sh sql-server:1433 --timeout=30 -- \
+      dotnet ef database update --project ./AccountBank/AccountBank.csproj --startup-project ./AccountBank/AccountBank.csproj && \
+      dotnet AccountBank.dll"
+
+  transactions-api:
+    build:
+      context: .
+      dockerfile: Transactions/Dockerfile
+    ports:
+      - "5001:5001"
+    networks:
+      - system-bank-network
+    depends_on:
+      - sql-server
+    command: >
+      sh -c "./wait-for-it.sh sql-server:1433 --timeout=30 -- \
+      dotnet ef database update --project ./Transactions/Transactions.csproj --startup-project ./Transactions/Transactions.csproj && \
+      dotnet Transactions.dll"
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=DELFINANCEDB1000_DELFINANCEDB1000
+    ports:
+      - "1433:1433"
+    networks:
+      - system-bank-network
+
+networks:
+  system-bank-network:
+    driver: bridge

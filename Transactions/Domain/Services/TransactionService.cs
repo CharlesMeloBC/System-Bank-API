@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Transactions.Data;
+using Transactions.Core.Infrastructure.Data;
 using Transactions.Domain.DTOs;
 using Transactions.Domain.Enums;
 using Transactions.Domain.Models;

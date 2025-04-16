@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(typeof(AccountBankMappingProfile));
 builder.Services.AddScoped<BankAccountService>();
-builder.Services.AddScoped <BalanceService>();
+builder.Services.AddScoped<BalanceService>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -30,5 +30,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Transactions.Data;
+using Transactions.Core.Aplication.Transfers.Handlers;
+using Transactions.Core.Domain.Aggregates.BatchAggregates;
+using Transactions.Core.Infrastructure.Data;
+using Transactions.Core.Infrastructure.Repository;
 using Transactions.Domain.Services;
 
 
@@ -17,8 +20,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddHttpClient<BankAccountService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<TransactionService>();
-
-
+builder.Services.AddScoped<IBatchTranferItem, BatchTransferItemRepository>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -37,5 +39,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
