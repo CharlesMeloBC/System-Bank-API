@@ -27,15 +27,16 @@ namespace Transactions.Core.Infrastructure.Data
                 entity.Property(t => t.CounterpartyHolderDocument).IsRequired();
             });
 
-            modelBuilder.Entity<BatchTransfers>(entity =>
+            modelBuilder.Entity<BatchTransfersItem> (entity =>
             {
                 entity.HasKey(t => t.Id);
                 entity.Property(t => t.TransferType).IsRequired();
                 entity.Property(t => t.BeneficiaryAccountNumber).IsRequired().HasMaxLength(20);
                 entity.Property(t => t.Amount).IsRequired().HasColumnType("decimal(18, 2)");
+                entity.HasOne(t => t.Batch).WithMany(t => t.Items).HasForeignKey(t => t.BatchId);
             });
 
-            modelBuilder.Entity<BatchTransfersItem>(entity =>
+            modelBuilder.Entity<BatchTransfers>(entity =>
             {
                 entity.Property(t => t.CreatedBy).IsRequired().HasMaxLength(40);
                 entity.Property(t => t.ApprovedBy).IsRequired().HasMaxLength(40);

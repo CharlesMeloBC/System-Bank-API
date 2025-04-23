@@ -1,8 +1,7 @@
 ﻿using Transactions.Core.Domain.Aggregates.BatchAggregates;
-using Microsoft.EntityFrameworkCore;
 using Transactions.Core.Infrastructure.Data;
 
-namespace Transactions.Infrastructure.Repositories
+namespace Transactions.Core.Infrastructure.Repository
 {
     public class BatchTransferItemRepository : IBatchTranferItem
     {
@@ -15,7 +14,13 @@ namespace Transactions.Infrastructure.Repositories
 
         public async Task AddAsync(BatchTransfersItem transfer)
         {
-            await _context.BatchTransferItems.AddAsync(transfer);
+            var transferItem = new BatchTransfersItem(
+                transfer.Amount,
+                transfer.BeneficiaryAccountNumber,
+                transfer.TransferType
+            );
+
+            await _context.BatchTransferItems.AddAsync(transferItem);
             await _context.SaveChangesAsync();
         }
     }

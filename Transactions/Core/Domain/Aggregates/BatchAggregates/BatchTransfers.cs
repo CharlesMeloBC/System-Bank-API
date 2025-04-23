@@ -2,23 +2,32 @@
 {
     public class BatchTransfers
     {
-        public Guid Id { get; private set; }
-        public int Batch { get; private set; }
-        public TransferType TransferType { get; private set; }
-        public long Amount { get; private set; }
-        public string BeneficiaryAccountNumber { get; private set; }
+        public int Id { get; private set; }
+        public string Status { get; private set; }
+        public string BankAccountNumber { get; private set; }
         public DateTime CreatedAt { get; private set; }
+        public string CreatedBy { get; private set; }       // accessUser.username
+        public string? ApprovedBy { get; private set; }     // accessUser.username
 
+        public List<BatchTransfersItem> Items {  get; private set; }
         public BatchTransfers() { }
 
-        public BatchTransfers(long amount, string beneficiaryAccountNumber, TransferType transferType)
+        public BatchTransfers(string bankAccountNumber, string createdBy)
         {
-            Id = Guid.NewGuid();  // Gerar um GUID único
-            Batch = 1; // Se você quer um valor fixo ou vai configurar em outro lugar
-            Amount = amount;
-            BeneficiaryAccountNumber = beneficiaryAccountNumber;
-            TransferType = transferType;
-            CreatedAt = DateTime.UtcNow;  // Adicionando data de criação
+            BankAccountNumber = bankAccountNumber;
+            CreatedAt = DateTime.UtcNow;
+            CreatedBy = createdBy;
+            Status = "PENDING";
+            Items = new List<BatchTransfersItem>();
+        }
+
+        public void Approve(string approvedBy)
+        {
+            if (Status != "PENDING")
+                throw new InvalidOperationException("Apenas lotes pendentes podem ser aprovados.");
+
+            Status = "APPROVED";
+            ApprovedBy = approvedBy;
         }
     }
 }

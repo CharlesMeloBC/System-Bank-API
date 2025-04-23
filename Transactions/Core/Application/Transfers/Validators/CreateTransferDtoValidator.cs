@@ -5,7 +5,7 @@ using Transactions.Core.Aplication.Transfers.DTOs;
 namespace Transactions.Core.Application.Transfers.Validators
 {
 
-    public class CreateTransferDtoValidator : AbstractValidator<CreateTransferDto>
+    public class CreateTransferDtoValidator : AbstractValidator<CreateTransferItemDto>
     {
         public CreateTransferDtoValidator()
         {

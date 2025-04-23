@@ -2,6 +2,6 @@
 {
     public interface IBatchTranferItem
     {
-        Task AddAsync(BatchTransfers transfer);
+        Task AddAsync(BatchTransfersItem transfer);
     }
 }

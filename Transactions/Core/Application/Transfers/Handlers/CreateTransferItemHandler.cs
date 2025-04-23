@@ -1,7 +1,7 @@
 ﻿using Transactions.Core.Aplication.Transfers.Commands;
 using Transactions.Core.Domain.Aggregates.BatchAggregates;
 
-namespace Transactions.Core.Aplication.Transfers.Handlers
+namespace Transactions.Core.Application.Transfers.Handlers
 {
     public class CreateTransferHandler
     {
@@ -12,13 +12,13 @@ namespace Transactions.Core.Aplication.Transfers.Handlers
             _repository = repository;
         }
 
-        public async Task<BatchTransfers> HandleAsync(CreateTransferCommand command)
+        public async Task<BatchTransfersItem> HandleAsync(CreateTransferCommand command)
         {
             var dto = command.Dto;
 
-            var transfer = new BatchTransfers(
+            var transfer = new BatchTransfersItem(
                 dto.Amount,
-                dto.BankAccountNumber,
+                dto.BeneficiaryAccountNumber,
                 dto.TransferType
             );
 

@@ -4,9 +4,9 @@ namespace Transactions.Core.Aplication.Transfers.Commands
 {
     public class CreateTransferCommand
     {
-        public CreateTransferDto Dto { get; }
+        public CreateTransferItemDto Dto { get; }
 
-        public CreateTransferCommand(CreateTransferDto dto)
+        public CreateTransferCommand(CreateTransferItemDto dto)
         {
             Dto = dto;
         }

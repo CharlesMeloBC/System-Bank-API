@@ -2,11 +2,11 @@
 
 namespace Transactions.Core.Aplication.Transfers.DTOs
 {
-    public class CreateTransferDto
+    public class CreateTransferItemDto
     {
         public long Amount { get; set; }
         public TransferType TransferType { get; set; }
-        public string BankAccountNumber { get; set; }
+        public string BeneficiaryAccountNumber { get; set; }
     }
 
 }
